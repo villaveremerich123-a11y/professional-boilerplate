@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/userController';
 import { validate } from '../middleware/validate';
+
 import { 
     createUserSchema, 
     updateUserSchema, 
@@ -8,11 +9,14 @@ import {
     paginationQuerySchema 
 } from '../dto/user.dto';
 import { asyncHandler } from '../utils/asyncHandler';
+import { authMiddleware } from '../middleware/auth';
+
 
 export const userRoutes = Router();
 
 userRoutes.get(
     '/',
+    authMiddleware,
     validate(paginationQuerySchema, 'query'),
     asyncHandler(UserController.getAll)
 );
