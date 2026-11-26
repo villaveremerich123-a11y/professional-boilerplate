@@ -1,27 +1,64 @@
+
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
     UpdateDateColumn,
+    Index
 } from 'typeorm';
 
 @Entity('users')
+@Index(['email'], { unique: true })
+@Index(['verificationToken'], { unique: true })
+@Index(['resetPasswordToken'], { unique: true })
 export class User {
+
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ length: 100 })
     name!: string;
 
-    @Column({ type: 'varchar', length: 100, unique: true })
+    @Column({ length: 100 })
     email!: string;
 
-    @Column({ type: 'varchar', length: 255, select: false })
+    @Column({ length: 255, select: false })
     password!: string;
 
-    @Column({ type: 'boolean', default: true })
+    @Column({ default: true })
     isActive!: boolean;
+
+    // EMAIL VERIFICATION FIELDS
+
+    @Column({ default: false })
+    isVerified!: boolean;
+
+    @Column({
+        type: 'varchar',
+        length: 255,
+        nullable: true,
+        select: false
+    })
+    verificationToken!: string | null;
+
+    @Column({ type: 'datetime', nullable: true })
+    verificationTokenExpiry!: Date | null;
+
+    // PASSWORD RESET FIELDS
+
+    @Column({
+        type: 'varchar',
+        length: 255,
+        nullable: true,
+        select: false
+    })
+    resetPasswordToken!: string | null;
+
+    @Column({ type: 'datetime', nullable: true })
+    resetPasswordExpiry!: Date | null;
+
+    // EXISTING FIELDS
 
     @Column({ type: 'int', nullable: true })
     age!: number | null;
